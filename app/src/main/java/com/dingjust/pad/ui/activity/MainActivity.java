@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.jzvd.JZVideoPlayer;
 import com.dingjust.pad.R;
 import com.dingjust.pad.bean.Material;
 import com.dingjust.pad.bean.Order;
@@ -29,8 +31,10 @@ import com.dingjust.pad.presenter.PhotoPresenter;
 import com.dingjust.pad.presenter.impl.LogoutPresenterImpl;
 import com.dingjust.pad.presenter.impl.OrderPresenterImpl;
 import com.dingjust.pad.presenter.impl.PhotoPresenterImpl;
+import com.dingjust.pad.ui.adapter.BannerAdapter;
 import com.dingjust.pad.ui.adapter.MaterialApter;
 import com.dingjust.pad.ui.adapter.MyBaseExpandableListAdapter;
+import com.dingjust.pad.ui.customView.IndicatorView;
 import com.dingjust.pad.utils.TimeTools;
 import com.dingjust.pad.view.LogoutView;
 import com.dingjust.pad.view.OrderView;
@@ -46,8 +50,6 @@ public class MainActivity extends AppCompatActivity implements LogoutView, Photo
     TextView user;
     @BindView(R.id.logout)
     Button logout;
-    @BindView(R.id.video)
-    VideoView videoView;
     @BindView(R.id.units)
     TextView units;
     @BindView(R.id.count_time)
@@ -56,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements LogoutView, Photo
     Button startAndPause;
     @BindView(R.id.finish)
     Button finish;
+    @BindView(R.id.view_pager)
+    ViewPager viewPager;
 
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
@@ -106,6 +110,20 @@ public class MainActivity extends AppCompatActivity implements LogoutView, Photo
             String name = data.getStringExtra("userName");
             //    userName.setText("当前用户：" + data.getStringExtra("userName"));
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (JZVideoPlayer.backPress()) {
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        JZVideoPlayer.releaseAllVideos();
     }
 
     /**
@@ -261,12 +279,18 @@ public class MainActivity extends AppCompatActivity implements LogoutView, Photo
     public void initParams() {
         recyclerView = findViewById(R.id.material_detail);
         progressBar = findViewById(R.id.photoProgress);
+        //视频uri
+        List<String> mUrlList = new ArrayList<>();
+        mUrlList.add("http://oebqxz1zs.bkt.clouddn.com/kouzi.png");
+        mUrlList.add("http://oebqxz1zs.bkt.clouddn.com/gongyi.mp4");
+        mUrlList.add("http://oebqxz1zs.bkt.clouddn.com/gongyi.mp4");
+
+        BannerAdapter bannerAdapter = new BannerAdapter(this, mUrlList);
+        viewPager.setAdapter(bannerAdapter);
+        IndicatorView indicatorView = (IndicatorView) findViewById(R.id.id_view_indicator);
+        indicatorView.setViewPager(viewPager);
         //获取用户名
         user.setText("当前用户：\n" + getIntent().getStringExtra("userName"));
-        videoView.setMediaController(new MediaController(this));
-        Uri uri = Uri.parse("http://oebqxz1zs.bkt.clouddn.com/gongyi.mp4");
-        videoView.setVideoURI(uri);
-        videoView.start();
     }
 
 
