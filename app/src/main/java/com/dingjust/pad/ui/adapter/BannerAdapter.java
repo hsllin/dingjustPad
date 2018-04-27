@@ -1,11 +1,13 @@
 package com.dingjust.pad.ui.adapter;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerStandard;
 import com.dingjust.pad.R;
 import com.squareup.picasso.Picasso;
@@ -61,7 +63,8 @@ public class BannerAdapter extends PagerAdapter {
             imageView.setVisibility(View.GONE);
             jzVideoPlayerStandard.setUp(mUrlList.get(position)
                     , JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, "实例视频");
-
+            JZVideoPlayer.FULLSCREEN_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+            JZVideoPlayer.NORMAL_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
         } else {
 //        用Glide下載圖片
             jzVideoPlayerStandard.setVisibility(View.GONE);

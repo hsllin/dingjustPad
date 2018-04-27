@@ -49,7 +49,7 @@
                         app:indicatorSmooth="false"
                         custom:indicatorIcon="@drawable/indicator_selector"
                         custom:indicatorMargin="5dp"
-                        custom:indicatorSize="9dp"/>
+                        custom:indicatorSize="12dp"/>
 
             </RelativeLayout>
             <!--图片描述列表-->

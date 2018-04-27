@@ -25,12 +25,15 @@ import com.dingjust.pad.bean.Order;
 import com.dingjust.pad.interactor.impl.LogoutInteractorImpl;
 import com.dingjust.pad.interactor.impl.OrderInteractorImpl;
 import com.dingjust.pad.interactor.impl.PhotoInteractorImpl;
+import com.dingjust.pad.interactor.impl.VideoAndPhotoInteractorImpl;
 import com.dingjust.pad.presenter.LogoutPresenter;
 import com.dingjust.pad.presenter.OrderPresenter;
 import com.dingjust.pad.presenter.PhotoPresenter;
+import com.dingjust.pad.presenter.VideoAndPhotoPresenter;
 import com.dingjust.pad.presenter.impl.LogoutPresenterImpl;
 import com.dingjust.pad.presenter.impl.OrderPresenterImpl;
 import com.dingjust.pad.presenter.impl.PhotoPresenterImpl;
+import com.dingjust.pad.presenter.impl.VideoAndPhotoPresenterImpl;
 import com.dingjust.pad.ui.adapter.BannerAdapter;
 import com.dingjust.pad.ui.adapter.MaterialApter;
 import com.dingjust.pad.ui.adapter.MyBaseExpandableListAdapter;
@@ -39,13 +42,14 @@ import com.dingjust.pad.utils.TimeTools;
 import com.dingjust.pad.view.LogoutView;
 import com.dingjust.pad.view.OrderView;
 import com.dingjust.pad.view.PhotoView;
+import com.dingjust.pad.view.VideoAndPhotoView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends AppCompatActivity implements LogoutView, PhotoView, OrderView, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements LogoutView, PhotoView, OrderView, VideoAndPhotoView, View.OnClickListener {
     @BindView(R.id.user)
     TextView user;
     @BindView(R.id.logout)
@@ -74,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements LogoutView, Photo
     private LogoutPresenter logoutPresenter;
     private PhotoPresenter photoPresenter;
     private OrderPresenter orderPresenter;
+    private VideoAndPhotoPresenter videoAndPhotoPresenter;
 
     private Timer mTimer;
     private TimerTask mTimerTask;
@@ -100,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements LogoutView, Photo
         logoutPresenter = new LogoutPresenterImpl(this, new LogoutInteractorImpl());
         photoPresenter = new PhotoPresenterImpl(this, new PhotoInteractorImpl());
         orderPresenter = new OrderPresenterImpl(this, new OrderInteractorImpl());
+        videoAndPhotoPresenter = new VideoAndPhotoPresenterImpl(this,new VideoAndPhotoInteractorImpl());
         initTimer(MAX_TIME);
         mTimer.schedule(mTimerTask, 0, 1000);
     }
@@ -279,20 +285,9 @@ public class MainActivity extends AppCompatActivity implements LogoutView, Photo
     public void initParams() {
         recyclerView = findViewById(R.id.material_detail);
         progressBar = findViewById(R.id.photoProgress);
-        //视频uri
-        List<String> mUrlList = new ArrayList<>();
-        mUrlList.add("http://oebqxz1zs.bkt.clouddn.com/kouzi.png");
-        mUrlList.add("http://oebqxz1zs.bkt.clouddn.com/gongyi.mp4");
-        mUrlList.add("http://oebqxz1zs.bkt.clouddn.com/gongyi.mp4");
-
-        BannerAdapter bannerAdapter = new BannerAdapter(this, mUrlList);
-        viewPager.setAdapter(bannerAdapter);
-        IndicatorView indicatorView = (IndicatorView) findViewById(R.id.id_view_indicator);
-        indicatorView.setViewPager(viewPager);
         //获取用户名
         user.setText("当前用户：\n" + getIntent().getStringExtra("userName"));
     }
-
 
     @Override
     public void showProgress() {
@@ -341,6 +336,7 @@ public class MainActivity extends AppCompatActivity implements LogoutView, Photo
         super.onResume();
         photoPresenter.onResume();
         orderPresenter.onResume();
+        videoAndPhotoPresenter.resume();
     }
 
     //完工逻辑
@@ -375,5 +371,12 @@ public class MainActivity extends AppCompatActivity implements LogoutView, Photo
     }
 
 
+    @Override
+    public void setVideoAndPhotoUri(List<String> uriList) {
+        BannerAdapter bannerAdapter = new BannerAdapter(this, uriList);
+        viewPager.setAdapter(bannerAdapter);
+        IndicatorView indicatorView = (IndicatorView) findViewById(R.id.id_view_indicator);
+        indicatorView.setViewPager(viewPager);
+    }
 }
 
