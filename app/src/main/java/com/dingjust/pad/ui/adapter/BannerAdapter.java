@@ -62,7 +62,8 @@ public class BannerAdapter extends PagerAdapter {
             jzVideoPlayerStandard.setVisibility(View.VISIBLE);
             imageView.setVisibility(View.GONE);
             jzVideoPlayerStandard.setUp(mUrlList.get(position)
-                    , JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, "实例视频");
+                    , JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, "示例视频");
+            Picasso.get().load("http://oebqxz1zs.bkt.clouddn.com/videoTitle3.png").into(jzVideoPlayerStandard.thumbImageView);
             JZVideoPlayer.FULLSCREEN_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
             JZVideoPlayer.NORMAL_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
         } else {

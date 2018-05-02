@@ -85,93 +85,9 @@ public class MainActivity extends AppCompatActivity implements LogoutView, Photo
 
     private static final long MAX_TIME = 5000;
     private long curTime = 5000;
-    private boolean isPause = false;
-    private boolean isStart = false;
     private static final int WHAT = 101;
 
     private MyBaseExpandableListAdapter myBaseExpandableListAdapter;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-        initParams();
-        findViewById(R.id.logout).setOnClickListener(this);
-        findViewById(R.id.qualityPro).setOnClickListener(this);
-        findViewById(R.id.finish).setOnClickListener(this);
-        findViewById(R.id.start_pause).setOnClickListener(this);
-        elv = (ExpandableListView) findViewById(R.id.elv_local_data);
-        logoutPresenter = new LogoutPresenterImpl(this, new LogoutInteractorImpl());
-        photoPresenter = new PhotoPresenterImpl(this, new PhotoInteractorImpl());
-        orderPresenter = new OrderPresenterImpl(this, new OrderInteractorImpl());
-        videoAndPhotoPresenter = new VideoAndPhotoPresenterImpl(this,new VideoAndPhotoInteractorImpl());
-        initTimer(MAX_TIME);
-        mTimer.schedule(mTimerTask, 0, 1000);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            String name = data.getStringExtra("userName");
-            //    userName.setText("当前用户：" + data.getStringExtra("userName"));
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (JZVideoPlayer.backPress()) {
-            return;
-        }
-        super.onBackPressed();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        JZVideoPlayer.releaseAllVideos();
-    }
-
-    /**
-     * 初始化Timer
-     */
-    public void initTimer(final long time) {
-        mTimerTask = new TimerTask() {
-            @Override
-            public void run() {
-//                if (curTime == 0) {
-//                    curTime = MAX_TIME;
-//                } else {
-//                    curTime -= 1000;
-//                }
-                if (!isStart) {
-                    curTime = time;
-                    isStart = true;
-                } else {
-                    curTime -= 1000;
-                }
-                Message message = new Message();
-                message.what = WHAT;
-                message.obj = curTime;
-                mHandler.sendMessage(message);
-            }
-        };
-        mTimer = new Timer();
-    }
-
-    /**
-     * destory上次使用的
-     */
-    public void destroyTimer() {
-        if (mTimer != null) {
-            mTimer.cancel();
-            mTimer = null;
-        }
-        if (mTimerTask != null) {
-            mTimerTask.cancel();
-            mTimerTask = null;
-        }
-    }
 
     Handler mHandler = new Handler() {
         @Override
@@ -187,39 +103,52 @@ public class MainActivity extends AppCompatActivity implements LogoutView, Photo
                         count_time.setTextColor(Color.rgb(255, 0, 0));
                         count_time.setText("您已经落后大部队:" + "\n" + TimeTools.getCountTimeByLong(sRecLen));
                     }
-
-//                    if (sRecLen <= 0) {
-//                        curTime -=1000 ;
-//                    }
-//                    if (sRecLen <= 0) {
-//                        mTimer.cancel();
-//                        curTime = 0;
-//                        Toast.makeText(mContext, "结束", Toast.LENGTH_SHORT).show();
-//                    }
                     break;
             }
         }
     };
 
-    //倒计时的暂停继续逻辑
-    public void startAndPause() {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+        initParams();
 
-        if (!isPause) {
-            isPause = true;
-            mTimer.cancel();
-            Log.d("start--------", "start click");
-            startAndPause.setText("重新开始");
+        findViewById(R.id.logout).setOnClickListener(this);
+        findViewById(R.id.qualityPro).setOnClickListener(this);
+        findViewById(R.id.finish).setOnClickListener(this);
+        findViewById(R.id.start_pause).setOnClickListener(this);
+        elv = (ExpandableListView) findViewById(R.id.elv_local_data);
+        logoutPresenter = new LogoutPresenterImpl(this, new LogoutInteractorImpl());
+        photoPresenter = new PhotoPresenterImpl(this, new PhotoInteractorImpl());
+        orderPresenter = new OrderPresenterImpl(this, new OrderInteractorImpl());
+        videoAndPhotoPresenter = new VideoAndPhotoPresenterImpl(this, new VideoAndPhotoInteractorImpl());
+        TimeTools.initTimer(mHandler, MAX_TIME);
+        TimeTools.mTimer.schedule(TimeTools.mTimerTask, 0, 1000);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            String name = data.getStringExtra("userName");
+            //    userName.setText("当前用户：" + data.getStringExtra("userName"));
+        }
+    }
+
+    //这两个方法是饺子播放器中用于处理点击返回和暂停的
+    @Override
+    public void onBackPressed() {
+        if (JZVideoPlayer.backPress()) {
             return;
         }
-        if (isPause) {
-            destroyTimer();
-            initTimer(MAX_TIME);
-            mTimer.schedule(mTimerTask, 0, 1000);
-            isPause = false;
-            Log.d("pause--------", "pause click");
-            startAndPause.setText("暂停");
-            return;
-        }
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        JZVideoPlayer.releaseAllVideos();
     }
 
     @Override
@@ -236,12 +165,11 @@ public class MainActivity extends AppCompatActivity implements LogoutView, Photo
                 doneJob();
                 break;
             case R.id.start_pause:
-                startAndPause();
+                TimeTools.startAndPause(startAndPause, mHandler);
                 break;
             default:
         }
     }
-
 
     @Override
     public void setLogoutError() {
@@ -271,11 +199,14 @@ public class MainActivity extends AppCompatActivity implements LogoutView, Photo
     @Override
     public void onDestroy() {
         super.onDestroy();
+        orderPresenter.destroy();
+        videoAndPhotoPresenter.destroy();
+        photoPresenter.destroy();
         if (progressDialog != null) {
             progressDialog.dismiss();
             progressDialog = null;
         }
-        destroyTimer();
+        TimeTools.destroyTimer();
         if (mHandler != null) {
             mHandler.removeMessages(WHAT);
             mHandler = null;
@@ -287,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements LogoutView, Photo
         progressBar = findViewById(R.id.photoProgress);
         //获取用户名
         user.setText("当前用户：\n" + getIntent().getStringExtra("userName"));
+
     }
 
     @Override
@@ -341,16 +273,14 @@ public class MainActivity extends AppCompatActivity implements LogoutView, Photo
 
     //完工逻辑
     public void doneJob() {
-        destroyTimer();
-        //这个倒计时需要从服务器端拿
-        initTimer(MAX_TIME);
-        isStart = false;
-        isPause = false;
-        mTimer.schedule(mTimerTask, 0, 1000);
+        TimeTools.destroyTimer();
+        TimeTools.initTimer(mHandler, MAX_TIME);
+        TimeTools.isStart = false;
+        TimeTools.isPause = false;
+        TimeTools.mTimer.schedule(TimeTools.mTimerTask, 0, 1000);
         try {
             if (groupList.size() > 0) {
                 String message = myBaseExpandableListAdapter.getGroup(0);
-                Log.d("message----------------", message);
                 String parentPosition = myBaseExpandableListAdapter.getGroup(0);
                 groupList.remove(parentPosition);
                 childList.remove(0);
@@ -362,14 +292,11 @@ public class MainActivity extends AppCompatActivity implements LogoutView, Photo
             } else {
                 finish.setEnabled(false);
                 Toast.makeText(getApplicationContext(), "订单已全部完成", Toast.LENGTH_LONG).show();
-
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
     @Override
     public void setVideoAndPhotoUri(List<String> uriList) {
