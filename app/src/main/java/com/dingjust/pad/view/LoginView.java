@@ -13,5 +13,7 @@ public interface LoginView extends BaseView {
 
     void setPasswordError();
 
-    void navigateToHome();
+    void setWorkStationError();
+
+    void navigateToHome(String type);
 }

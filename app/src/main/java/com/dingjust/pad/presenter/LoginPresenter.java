@@ -5,7 +5,7 @@ package com.dingjust.pad.presenter;
  * @version: 1.0
  */
 public interface LoginPresenter {
-    void validateCredentials(String userName, String password);
+    void validateCredentials(String userName, String password, String workStation);
 
     void destroy();
 }

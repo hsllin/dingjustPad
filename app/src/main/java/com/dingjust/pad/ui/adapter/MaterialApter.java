@@ -86,7 +86,8 @@ public class MaterialApter extends RecyclerView.Adapter<MaterialApter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         //TODO:手机和平板的图片列表还没适配
-        imageHeight = (int) (height * (1 / 2.6) * 0.7);
+//        imageHeight = (int) (height * (1 / 2.6) * 0.7);
+        imageHeight = (int) (height * (1 / 2.6) * 0.75);
         imageWidth = (int) (width * (0.6 / 1.4) * 0.5);
         textHeight = (int) (height * (1 / 2.6) * 0.1);
         Material material = lists.get(position);

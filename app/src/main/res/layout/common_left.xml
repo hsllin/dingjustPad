@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:custom="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_weight="0.3"
+              android:background="@drawable/order"
+              android:shadowColor="@color/black"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context=".ui.activity.base.BaseActivity"
+>
+
+    <RelativeLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+    >
+        <android.support.v4.view.ViewPager
+                android:id="@+id/view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+        </android.support.v4.view.ViewPager>
+        <com.dingjust.pad.ui.customView.IndicatorView
+                android:id="@+id/id_view_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="32dp"
+                app:indicatorSmooth="false"
+                custom:indicatorIcon="@drawable/indicator_selector"
+                custom:indicatorMargin="5dp"
+                custom:indicatorSize="12dp"/>
+
+    </RelativeLayout>
+    <!--图片描述列表-->
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1.6"
+    >
+
+        <android.support.v7.widget.RecyclerView
+                android:id="@+id/material_detail"
+                android:scrollbars="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        <ProgressBar
+                android:id="@+id/photoProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:visibility="gone"
+
+        />
+    </LinearLayout>
+
+</LinearLayout>
+

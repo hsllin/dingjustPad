@@ -10,9 +10,11 @@ public interface LoginInteractor {
 
         void setPasswordError();
 
-        void success();
+        void setWorkStationError();
+
+        void success(String type);
 
     }
 
-    void login(String userName, String password, LoginFinishedListener loginFinishedListener);
+    void login(String userName, String password, String workStation, LoginFinishedListener loginFinishedListener);
 }

@@ -7,11 +7,11 @@
               android:layout_height="match_parent">
   <TextView
       android:id="@+id/group_name"
-      android:textSize="15dp"
+      android:textSize="@dimen/TextSizeBig"
       android:background="@drawable/order"
       android:shadowColor="@color/black"
       android:gravity="center"
       android:layout_width="match_parent"
-      android:layout_height="25dp"/>
+      android:layout_height="wrap_content"/>
 
 </LinearLayout>

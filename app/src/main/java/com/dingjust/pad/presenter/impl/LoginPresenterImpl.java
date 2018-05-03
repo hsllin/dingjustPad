@@ -20,11 +20,11 @@ public class LoginPresenterImpl implements LoginPresenter, LoginInteractor.Login
     }
 
     @Override
-    public void validateCredentials(String userName, String password) {
+    public void validateCredentials(String userName, String password, String workStation) {
         if (loginView != null) {
             loginView.showProgressDialog();
         }
-        loginInteractor.login(userName, password, this);
+        loginInteractor.login(userName, password, workStation, this);
     }
 
     @Override
@@ -50,9 +50,17 @@ public class LoginPresenterImpl implements LoginPresenter, LoginInteractor.Login
     }
 
     @Override
-    public void success() {
+    public void setWorkStationError() {
         if (loginView != null) {
-            loginView.navigateToHome();
+            loginView.setWorkStationError();
+            loginView.hideProgressDialog();
+        }
+    }
+
+    @Override
+    public void success(String type) {
+        if (loginView != null) {
+            loginView.navigateToHome(type);
         }
     }
 }

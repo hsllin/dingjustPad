@@ -41,8 +41,8 @@ public class OrderInteractorImpl implements OrderInteractor {
         }
         for (Order order : orderList) {
             group = new ArrayList<>();
-            group.add("款号：" + order.getMatnr() + "\n" + "订单类型：" + order.getOrtyp() + "\n" + "交期：" + order.getLfdat() + "\n" + "标准工时：" + order.getSmv() + "\n");
-            group.add("完工倒计时：" + order.getTime() + "\n");
+            group.add("款号：" + order.getMatnr() + "\n" + "订单类型：" + order.getOrtyp() + "\n" + "交期：" + order.getLfdat());
+            group.add("标准工时：" + order.getSmv() + "\n");
             group.add("工序：" + order.getGxmc() + "\n" + "设备：" + order.getJqdm() + "\n" + "等级难度：" + order.getDiflv() + "\n" + "质量要求：" + order.getQmreq() + "\n");
             childList.add(group);
         }
